@@ -53,6 +53,11 @@ ACTIONS = [
         "Чинит баг: при беспроводном CarPlay ключ key_carplay_disconnect_address не чистится при отключении и блокирует BT-авто-коннект.",
         rnd_long()),
     plugin_action(
+        "su 0 kill $(pidof com.autolink.carplay)",
+        "5000",
+        "Перезапуск CarPlay-сервиса (persistent, перезапустится сам): при старте reconnectOnStart() пересобирает сессию по последнему устройству. Замена отвязки/привязки телефона.",
+        rnd_long()),
+    plugin_action(
         "svc bluetooth disable && sleep 4 && svc bluetooth enable",
         "30000",
         "Перезапуск BT: при включении адаптера (state 12) сервис вызывает autoConnectDevice() и подключает телефон.",
