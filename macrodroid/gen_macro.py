@@ -5,7 +5,7 @@
 import json, random, sys
 
 SRC = "/tmp/fx11/Enable_HUD.macro"
-OUT = "/home/vyunolbek/GeelyAtlasFX11-CarPlayFix/macrodroid/Fix_BT_CarPlay.macro"
+OUTDIR = "/home/vyunolbek/GeelyAtlasFX11-CarPlayFix/macrodroid"
 
 def sbytes(bs):
     return [(b - 256 if b > 127 else b) for b in bs]
@@ -64,14 +64,25 @@ ACTIONS = [
         rnd_long()),
 ]
 
-macro["m_actionList"] = ACTIONS
-macro["m_name"] = "Fix BT CarPlay"
-macro["m_description"] = "Geely FX11: чистка key_carplay_disconnect_address + рестарт BT — починить авто-коннект после CarPlay"
-macro["m_GUID"] = rnd_long()
+def write_macro(name, descr, actions, fname):
+    m = json.loads(json.dumps(macro))
+    m["m_actionList"] = actions
+    m["m_name"] = name
+    m["m_description"] = descr
+    m["m_GUID"] = rnd_long()
+    out = {"macro": m, "macroExportVersion": src["macroExportVersion"]}
+    path = f"{OUTDIR}/{fname}"
+    json.dump(out, open(path, "w"), ensure_ascii=False)
+    print("OK ->", path)
 
-json.dump(src, open(OUT, "w"), ensure_ascii=False)
-print("OK ->", OUT)
-# проверка: распарсить bundle обратно
-chk = build_bundle("TEST")
-cfg = json.loads(ubytes(chk).split(b'{"ip":')[1].rsplit(b'}', 1)[0].join([b'{"ip":', b'}']).decode())
-print("bundle check:", cfg["command"][:50])
+write_macro(
+    "Fix BT CarPlay",
+    "Geely FX11: чистка key_carplay_disconnect_address — починить авто-коннект BT после CarPlay",
+    ACTIONS[:1],
+    "Fix_BT_CarPlay.macro")
+
+write_macro(
+    "Recover CarPlay",
+    "Geely FX11: восстановление CarPlay после отвала (замена отвязки/привязки телефона)",
+    ACTIONS[1:],
+    "Recover_CarPlay.macro")
