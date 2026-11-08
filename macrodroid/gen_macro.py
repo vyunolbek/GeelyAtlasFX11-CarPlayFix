@@ -52,6 +52,9 @@ ACTIONS = [
         "2000",
         "Чинит баг: при беспроводном CarPlay ключ key_carplay_disconnect_address не чистится при отключении и блокирует BT-авто-коннект.",
         rnd_long()),
+]
+
+ACTIONS_RECOVER = [
     plugin_action(
         "su 0 kill $(pidof com.autolink.carplay)",
         "5000",
@@ -61,6 +64,14 @@ ACTIONS = [
         "svc bluetooth disable && sleep 4 && svc bluetooth enable",
         "30000",
         "Перезапуск BT: при включении адаптера (state 12) сервис вызывает autoConnectDevice() и подключает телефон.",
+        rnd_long()),
+]
+
+ACTIONS_CLEAR = [
+    plugin_action(
+        "am force-stop ru.kinopoisk && am force-stop ru.vk.store && am force-stop ru.yandex.music && am force-stop io.github.muntashirakon.AppManager && am force-stop com.alphainventor.filemanager && am force-stop app.revanced.android.youtube && am force-stop org.localsend.localsend_app && am force-stop com.android.launcher3",
+        "20000",
+        "Останавливает кэш-приложения и освобождает ~4 ГБ RAM перед поездкой. Приложения вернутся при запуске. Launcher3 (штатный Geely-лаунчер с CarLink/поиском) перезапустится, только когда он понадобится системе.",
         rnd_long()),
 ]
 
@@ -84,5 +95,11 @@ write_macro(
 write_macro(
     "Recover CarPlay",
     "Geely FX11: восстановление CarPlay после отвала (замена отвязки/привязки телефона)",
-    ACTIONS[1:],
+    ACTIONS_RECOVER,
     "Recover_CarPlay.macro")
+
+write_macro(
+    "Clear RAM",
+    "Geely FX11: остановка кэш-приложений — освободить память перед поездкой",
+    ACTIONS_CLEAR,
+    "Clear_RAM.macro")
